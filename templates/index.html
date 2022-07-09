@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>WikiNearby</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/static/index.css">
+		<link rel="shortcut icon" type="image/svg+xml" href="/static/logo.svg"/>
+	</head>	
+	<body>
+		<main>
+			<h1>
+				<img src="/static/logo.svg" />
+				<span>WikiNearby</span>
+			</h1>
+			<div id="form">
+				<div id="inputs">
+					<label id="lang-label">
+						<input id="lang" list="lang-datalist" placeholder=" ">
+						<div>Language (def. en)</div>
+					</label>
+					<datalist id="lang-datalist"></datalist>
+					<label id="query-label">
+						<input id="query" list="query-datalist" placeholder=" ">
+						<div>Article or Coordinates (eg. 45.0, -75.5)</div>
+					</label>
+					<datalist id="query-datalist"></datalist>
+				</div>
+				<div id="buttons">
+					<button id="submit" title="Submit form">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="10" cy="10" r="7"></circle>
+							<line x1="21" y1="21" x2="15" y2="15"></line>
+						</svg>
+						<span>Go</span>
+					</button>
+					<button id="locate" title="Use my location">
+						<svg xmlns="http://www.w3.org/2000/svg"width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="12" r="3"></circle>
+							<circle cx="12" cy="12" r="8"></circle>
+							<line x1="12" y1="2" x2="12" y2="4"></line>
+							<line x1="12" y1="20" x2="12" y2="22"></line>
+							<line x1="20" y1="12" x2="22" y2="12"></line>
+							<line x1="2" y1="12" x2="4" y2="12"></line>
+						</svg>
+						<span>My Location</span>
+					</button>
+				</div>
+			</div>
+			<div id="top"></div>
+			<div id="list"></div>
+			<div id="loading">
+				<img src="/static/loading.svg" />
+			</div>
+			<script src="/static/index.js"></script>
+		</main>
+	</body>
+</html>

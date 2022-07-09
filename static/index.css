@@ -1,0 +1,197 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	font-family: sans-serif;
+	font-size: 0.85em;
+	line-height: 1.5;
+	letter-spacing: 0.5px;
+	color: #444;
+	margin: 0;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	padding: 8px;
+	box-sizing: border-box;
+	justify-content: center;
+}
+
+h1 {
+	font-size: 2.25em;
+	margin: 1rem 0 0.5rem 0;
+	display: flex;
+	align-items: center;
+}
+
+h1 img {
+	width: 1em;
+	margin-right: 0.5rem;
+}
+
+main {
+	max-width: 750px;
+	margin: auto;
+}
+
+label {
+	position: relative;
+	display: block;
+	margin: 1em 0.5em 0.25em;
+}
+
+label input,
+label > div {
+	margin: 8px 0;
+	padding: 5px 0;
+}
+
+label > div {
+	position: absolute;
+	transition: transform .25s, font-size .25s;
+	pointer-events: none;
+	top: -4px;
+	left: 0;
+}
+
+label input:not(:placeholder-shown) + div,
+label input:focus + div,
+label input:-webkit-autofill + div {
+	font-size: 85%;
+	transform: translate(0, -16px);
+}
+
+label input {
+	border: none;
+	border-bottom: 2px solid #444;
+}
+
+label input:focus {
+	border-color: #74abeb;
+	outline: none;
+}
+
+button {
+	background: none;
+	border: none;
+	padding: 0 4px;
+	margin: 0.5em 0;
+}
+
+button:hover {
+	color: #2d8cea;
+	cursor: pointer;
+}
+
+#form, #inputs, #buttons {
+	display: flex;
+}
+
+#form input {
+	width: 100%;
+}
+
+#inputs, #query-label {
+	flex: 1;
+}
+
+#lang-label {
+	margin-left: 0;
+}
+
+#buttons {
+	margin: 0.5em 0;
+	text-align: right;
+}
+
+#top {
+	margin: 1em 0;
+}
+
+#loading {
+	display: none;
+	color: #74abeb;
+	text-align: center;
+}
+
+#loading img {
+	width: 12em;
+	max-width: 70vw;
+	margin-top: 5em;
+}
+
+.list-entry {
+	display: flex;
+	align-items: center;
+	margin: 0.5em 0;
+}
+
+.list-entry-image {
+	flex: 0 0 50px;
+	margin-right: 0.5em;
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+}
+
+.list-entry-text {
+	display: flex;
+	align-content: center;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.primary-link {
+	font-weight: bold;
+	text-decoration: none;
+	color: inherit;
+}
+
+.secondary-link {
+	text-decoration: none;
+}
+
+a {
+	color: #1669c9;
+}
+
+@media (min-width: 651px) {
+	button span {
+		color: transparent;
+		text-indent: -9999px;
+		display: inline-block;
+		width: 0;
+	}
+}
+
+@media (max-width: 650px) {
+	#form, #buttons {
+		display: block;
+	}
+	
+	button {
+		display: inline-flex;
+		align-items: center;
+	}
+	
+	button span {
+		margin-left: 4px;
+	}
+}
+
+@media (max-width: 450px) {
+	#inputs {
+		display: block;
+	}
+	
+	#query-label {
+		margin-left: 0;
+	}
+	
+	#submit {
+		padding-left: 0;
+	}
+}
