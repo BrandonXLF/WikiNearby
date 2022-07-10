@@ -21,8 +21,6 @@ function create(type, attrs, ...children) {
 
 async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 	window.removeEventListener('scroll', infiniteScroll);
-	document.getElementById('top').replaceChildren((!query && !ignoreEmpty) ? 'Error: Missing article or coordinates' : '');
-	document.getElementById('list').replaceChildren();
 
 	apiAbort?.abort();
 	document.getElementById('loading').style.display = '';
@@ -53,6 +51,9 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 			history.pushState({}, '', `/${params.toString() ? '?' : ''}${params.toString()}`);
 		}
 
+		document.getElementById('top').replaceChildren((!query && !ignoreEmpty) ? 'Error: Missing article or coordinates' : '');
+		document.getElementById('list').replaceChildren();
+		
 		document.title = (query || !ignoreEmpty) ? `${query || 'Error'} - WikiNearby` : 'WikiNearby';
 	}
 	
