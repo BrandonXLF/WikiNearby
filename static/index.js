@@ -87,7 +87,7 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 
 	document.getElementById('top').replaceChildren(
 		'Results for ',
-		getGeoHackLink(data.lat, data.lon)
+		getGeoHackLink(data.lat, data.lon, lang)
 	);
 	
 	document.getElementById('list')[append ? 'append' : 'replaceChildren'](
@@ -109,7 +109,7 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 				),
 				create('div', entry.desc),
 				create('div',
-					getGeoHackLink(entry.lat, entry.lon),
+					getGeoHackLink(entry.lat, entry.lon, lang, entry.page),
 					create('span', ` (${getDistance(data.lat, data.lon, entry.lat, entry.lon)})`)
 				)
 			)
@@ -122,9 +122,13 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 	window.addEventListener('scroll', infiniteScroll, { passive: true });
 }
 
-function getGeoHackLink(lat, lon) {
+function getGeoHackLink(lat, lon, lang, pagename = '') {
 	return create('a', {
-		href:`https://geohack.toolforge.org/geohack.php?params=${lat};${lon}}`,
+		href:`https://geohack.toolforge.org/geohack.php?${new URLSearchParams({
+			language: lang,
+			pagename: pagename,
+			params: `${lat};${lon}`
+		})}`,
 		class: 'secondary-link',
 		target: '_blank'
 	}, `${lat}, ${lon}`);
