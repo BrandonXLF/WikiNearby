@@ -19,45 +19,47 @@ function create(type, attrs, ...children) {
 	return el;
 }
 
-async function callAPI(lang, query, append = false) {
-	lang = lang || 'en';
-	
-	if (!query) {
-		document.getElementById('top').replaceChildren('Error: Missing article or coordinates');
-		document.getElementById('list').replaceChildren();
-		return;
-	}
-	
+async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 	window.removeEventListener('scroll', infiniteScroll);
+	document.getElementById('top').replaceChildren((!query && !ignoreEmpty) ? 'Error: Missing article or coordinates' : '');
+	document.getElementById('list').replaceChildren();
 
-	query = query.replace(/_/g, '');
-	query = query[0].toUpperCase() + query.slice(1);
+	apiAbort?.abort();
+	document.getElementById('loading').style.display = '';
 	
+	if (query) {
+		query = query.replace(/_/g, ' ');
+		query = query[0].toUpperCase() + query.slice(1);
+
+		lang = lang || 'en';
+	}
+
 	document.getElementById('lang').value = lang;
 	document.getElementById('query').value = query;
-	
+
 	if (append) {
 		currentOffset++;
 	} else {
-		document.title = `${query} - WikiNearby`;
-		
-		let params = new URLSearchParams(location.search);
-		let sameState = query == params.get('q') && lang == (params.get('lang') || 'en');
-		
-		history[sameState ? 'replaceState' : 'pushState']({}, '', `?${new URLSearchParams({
-			q: query,
-			lang: lang
-		})}`);
-
 		currentOffset = 0;
+		
+		let currParams = new URLSearchParams(location.search);
+		
+		if (query !== (currParams.get('q') || '') || lang !== (currParams.get('lang') || '')) {
+			let params = new URLSearchParams();
 
-		document.getElementById('top').replaceChildren();
-		document.getElementById('list').replaceChildren();
+			if (lang) params.set('lang', lang);
+			if (query) params.set('q', query);
+			
+			history.pushState({}, '', `/${params.toString() ? '?' : ''}${params.toString()}`);
+		}
+
+		document.title = (query || !ignoreEmpty) ? `${query || 'Error'} - WikiNearby` : 'WikiNearby';
 	}
+	
+	if (!query) return;
 
 	document.getElementById('loading').style.display = 'block';
 	
-	apiAbort?.abort();
 	apiAbort = new AbortController();
 	
 	let res = await fetch(`/api/nearby?${new URLSearchParams({
@@ -186,12 +188,9 @@ async function prefixSearch() {
 }
 
 function processURL() {
-	let params = new URLSearchParams(location.search),
-		query = params.get('q');
-		
-	if (!query) return;
+	let params = new URLSearchParams(location.search);
 	
-	callAPI(params.get('lang'), query);
+	callAPI(params.get('lang') || '', params.get('q') || '', false, true);
 }
 
 async function getLanguageSelection() {
@@ -205,6 +204,16 @@ processURL();
 getLanguageSelection();
 
 window.addEventListener('popstate', processURL);
+
 document.getElementById('query').addEventListener('input', prefixSearch);
 document.getElementById('submit').addEventListener('click', useForm);
-document.getElementById('locate').addEventListener('click', () => navigator.geolocation.getCurrentPosition(useCoords));
+
+document.getElementById('locate').addEventListener('click', () => {
+	navigator.geolocation.getCurrentPosition(useCoords)
+});
+
+document.getElementById('h1-link').addEventListener('click', e => {
+	e.preventDefault();
+	
+	callAPI('', '', false, true);
+});
