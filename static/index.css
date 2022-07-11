@@ -20,6 +20,7 @@ main {
 }
 
 h1 {
+	display: flex;
 	font-size: 2.25em;
 	margin: 1rem 0 0.5rem 0;
 }
@@ -88,6 +89,14 @@ button {
 button:hover {
 	color: #2d8cea;
 	cursor: pointer;
+}
+
+button svg {
+	width: 1.8em;
+	stroke-width: 2;
+	stroke: currentColor;
+	fill: none;
+	stroke-linecap: round;
 }
 
 #form, #inputs, #buttons {
@@ -163,7 +172,7 @@ a {
 }
 
 @media (min-width: 651px) {
-	button span {
+	#buttons button span {
 		color: transparent;
 		text-indent: -9999px;
 		display: inline-block;
@@ -176,12 +185,12 @@ a {
 		display: block;
 	}
 	
-	button {
+	#buttons button {
 		display: inline-flex;
 		align-items: center;
 	}
 	
-	button span {
+	#buttons button span {
 		margin-left: 4px;
 	}
 }

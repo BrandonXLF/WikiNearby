@@ -75,7 +75,7 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 
 	if (res.status === 500) {
 		document.title = 'Error - WikiNearby';
-		document.getElementById('top').replaceChildren('Error: An internal error has occurred!',);
+		document.getElementById('top').replaceChildren('Error: An internal error has occurred!');
 	}
 
 	let data = await res.json();
@@ -214,7 +214,7 @@ document.getElementById('query').addEventListener('input', prefixSearch);
 document.getElementById('submit').addEventListener('click', useForm);
 
 document.getElementById('locate').addEventListener('click', () => {
-	navigator.geolocation.getCurrentPosition(useCoords)
+	navigator.geolocation.getCurrentPosition(useCoords);
 });
 
 document.getElementById('h1-link').addEventListener('click', e => {
