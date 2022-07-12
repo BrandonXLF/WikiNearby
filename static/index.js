@@ -111,7 +111,7 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 				create('div', entry.desc),
 				create('div',
 					getGeoHackLink(entry.lat, entry.lon, lang, entry.page),
-					create('span', ` (${getDistance(data.lat, data.lon, entry.lat, entry.lon)})`)
+					create('span', ` (${entry.dist} km)`)
 				)
 			)
 		))
@@ -151,18 +151,6 @@ function infiniteScroll() {
 
 function useCoords({coords}) {
 	callAPI(getInput('lang'), `${coords.latitude}, ${coords.longitude}`);
-}
-
-function getDistance(lat1, lon1, lat2, lon2) {
-	lat1 = lat1 * Math.PI / 180;
-	lon1 = lon1 * Math.PI / 180;
-	lat2 = lat2 * Math.PI / 180;
-	lon2 = lon2 * Math.PI / 180;
-
-	// Haversine formula
-	let d = 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2 - lat1) / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin((lon2 - lon1) / 2), 2)));
-
-	return `${+d.toFixed(2)} km`;
 }
 
 async function prefixSearch() {

@@ -1,4 +1,4 @@
-import mysql.connector
+import MySQLdb
 from flask import Flask, request, render_template
 from configparser import ConfigParser
 import json
@@ -17,7 +17,7 @@ def main():
 	
 @app.route('/api/languages')
 def api_languages():
-	db = mysql.connector.connect(
+	db = MySQLdb.connect(
 		host = 'localhost' if config.getboolean('General', 'dev') else 'meta.web.db.svc.wikimedia.cloud',
 		port = 4711 if config.getboolean('General', 'dev') else 3306,
 		user = config['Database']['user'],
@@ -58,7 +58,7 @@ def api_nearby():
 		lat = match.group(1)
 		lon = match.group(2)
 
-	db = mysql.connector.connect(
+	db = MySQLdb.connect(
 		host = 'localhost' if config.getboolean('General', 'dev') else 'meta.web.db.svc.wikimedia.cloud',
 		port = 4711 if config.getboolean('General', 'dev') else 3306,
 		user = config['Database']['user'],
@@ -86,7 +86,7 @@ def api_nearby():
 		
 	db_name = res[0]
 
-	db = mysql.connector.connect(
+	db = MySQLdb.connect(
 		host = 'localhost' if config.getboolean('General', 'dev') else f'{db_name}.web.db.svc.wikimedia.cloud',
 		port = 4712 if config.getboolean('General', 'dev') else 3306,
 		user = config['Database']['user'],
@@ -122,20 +122,28 @@ def api_nearby():
 
 	cursor.execute(
 		'''
-			SELECT gt_lat, gt_lon, page_title, pp1.pp_value, pp2.pp_value, pp3.pp_value FROM geo_tags
+			SET @sin_lat = SIN(%s * PI() / 180);
+			SET @cos_lat = COS(%s * PI() / 180);
+			SET @lon = %s * PI() / 180;
+		
+			SELECT gt_lat, gt_lon, page_title, pp1.pp_value, pp2.pp_value, pp3.pp_value,
+			# Spherical law of cosines, https://www.movable-type.co.uk/scripts/latlong.html#cosine-law
+			ACOS(@sin_lat * SIN(gt_lat * PI() / 180) + @cos_lat * COS(gt_lat * PI() / 180) * COS(gt_lon * PI() / 180 - @lon)) * 6371 as dist
+			FROM geo_tags
 			JOIN page ON gt_page_id = page_id AND page_namespace = 0
 			LEFT JOIN page_props pp1 ON page_id = pp1.pp_page AND pp1.pp_propname = 'wikibase-shortdesc'
 			LEFT JOIN page_props pp2 ON page_id = pp2.pp_page AND pp2.pp_propname = 'page_image_free'
 			LEFT JOIN page_props pp3 ON page_id = pp3.pp_page AND pp3.pp_propname = 'page_image' AND pp2.pp_value IS NULL
 			WHERE gt_primary = 1
-			# Spherical law of cosines, https://www.movable-type.co.uk/scripts/latlong.html
-			ORDER BY ACOS(SIN(%s * PI() / 180) * SIN(gt_lat * PI() / 180) + COS(%s * PI() / 180) * COS(gt_lat * PI() / 180) * COS(gt_lon * PI() / 180 - %s * PI() / 180))
-			LIMIT 100
-			OFFSET %s
+			ORDER BY dist
+			LIMIT %s, 100;
 		''',
 		(lat, lat, lon, offset * 100)
 	)
 	
+	while not cursor.rowcount:
+		cursor.nextset()
+
 	out = []
 	
 	for row in cursor.fetchall():
@@ -144,7 +152,8 @@ def api_nearby():
 			'lon': dec_to_str(row[1]),
 			'page': row[2].decode(),
 			'desc': row[3].decode() if row[3] else None,
-			'img': row[4].decode() if row[4] else (row[5].decode() if row[5] else None)
+			'img': row[4].decode() if row[4] else (row[5].decode() if row[5] else None),
+			'dist': f'{row[6]:0.2f}'
 		})
 	
 	return json.dumps({
