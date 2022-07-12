@@ -120,14 +120,11 @@ def api_nearby():
 		lat = dec_to_str(pair[0])
 		lon = dec_to_str(pair[1])
 
+	# Spherical law of cosines, https://www.movable-type.co.uk/scripts/latlong.html#cosine-law
 	cursor.execute(
 		'''
-			SET @sin_lat = SIN(%s * PI() / 180);
-			SET @cos_lat = COS(%s * PI() / 180);
-			SET @lon = %s * PI() / 180;
-		
+			SET @sin_lat = SIN(%s * PI() / 180), @cos_lat = COS(%s * PI() / 180), @lon = %s * PI() / 180;
 			SELECT gt_lat, gt_lon, page_title, pp1.pp_value, pp2.pp_value, pp3.pp_value,
-			# Spherical law of cosines, https://www.movable-type.co.uk/scripts/latlong.html#cosine-law
 			ACOS(@sin_lat * SIN(gt_lat * PI() / 180) + @cos_lat * COS(gt_lat * PI() / 180) * COS(gt_lon * PI() / 180 - @lon)) * 6371 as dist
 			FROM geo_tags
 			JOIN page ON gt_page_id = page_id AND page_namespace = 0
@@ -141,11 +138,10 @@ def api_nearby():
 		(lat, lat, lon, offset * 100)
 	)
 	
-	while not cursor.rowcount:
-		cursor.nextset()
+	cursor.nextset()
 
 	out = []
-	
+
 	for row in cursor.fetchall():
 		out.append({
 			'lat': dec_to_str(row[0]),
