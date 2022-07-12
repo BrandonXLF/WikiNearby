@@ -74,24 +74,24 @@ def api_nearby():
 			WHERE family = 'wikipedia' AND is_closed = 0 AND url = %s
 			LIMIT 1
 		''',
-		('https://' + lang + '.wikipedia.org',)
+		(f'https://{lang}.wikipedia.org',)
 	)
 	
 	res = cursor.fetchone()
 	
 	if not res:
 		return json.dumps({
-			'error': 'Could not find Wikipedia with language code ' + lang + '.'
+			'error': f'Could not find Wikipedia with language code {lang}.'
 		}), 400
 		
 	db_name = res[0]
 
 	db = mysql.connector.connect(
-		host = 'localhost' if config.getboolean('General', 'dev') else lang + 'wiki.web.db.svc.wikimedia.cloud',
+		host = 'localhost' if config.getboolean('General', 'dev') else f'{db_name}.web.db.svc.wikimedia.cloud',
 		port = 4712 if config.getboolean('General', 'dev') else 3306,
 		user = config['Database']['user'],
 		password = config['Database']['pass'],
-		db = db_name + '_p'
+		db = f'{db_name}_p'
 	)
 
 	cursor = db.cursor()
