@@ -201,6 +201,12 @@ window.addEventListener('popstate', processURL);
 document.getElementById('query').addEventListener('input', prefixSearch);
 document.getElementById('submit').addEventListener('click', useForm);
 
+document.getElementById('query').addEventListener('keypress', e => {
+	if (e.key !== 'Enter') return;
+	
+	useForm();
+});
+
 document.getElementById('locate').addEventListener('click', () => {
 	navigator.geolocation.getCurrentPosition(useCoords);
 });
