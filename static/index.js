@@ -57,8 +57,13 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 		document.title = (query || !ignoreEmpty) ? `${query || 'Error'} - WikiNearby` : 'WikiNearby';
 	}
 	
-	if (!query) return;
+	if (!query) {
+		document.getElementById('about').style.display = '';
+		
+		return;
+	}
 
+	document.getElementById('about').style.display = 'none';
 	document.getElementById('loading').style.display = 'block';
 	
 	apiAbort = new AbortController();

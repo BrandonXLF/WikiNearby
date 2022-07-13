@@ -124,6 +124,10 @@ button svg {
 	margin: 1em 0;
 }
 
+#about {
+	margin-top: 1em;
+}
+
 #loading {
 	display: none;
 	color: #74abeb;
