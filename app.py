@@ -4,7 +4,7 @@ from configparser import ConfigParser
 import json
 import re
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 config = ConfigParser('')
 config.read('config.ini')
 
@@ -13,7 +13,7 @@ def dec_to_str(dec):
 
 @app.route('/')
 def main():
-	return render_template('index.html')
+	return render_template('index.html', mainPage=len(request.args) == 0)
 	
 @app.route('/api/languages')
 def api_languages():
@@ -159,4 +159,4 @@ def api_nearby():
 	})
 
 if __name__ == '__main__':
-	app.run(debug = config.getboolean('General', 'dev'))
+	app.run(debug=config.getboolean('General', 'dev'))

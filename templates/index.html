@@ -2,15 +2,18 @@
 <html lang="en">
 	<head>
 		<title>WikiNearby</title>
+		{% if not mainPage -%}
+			<meta name="robots" content="noindex">
+		{% endif -%}
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="/static/index.css">
-		<link rel="shortcut icon" type="image/svg+xml" href="/static/logo.svg"/>
-	</head>	
+		<link rel="stylesheet" href="/index.css">
+		<link rel="shortcut icon" type="image/svg+xml" href="/logo.svg"/>
+	</head>
 	<body>
 		<main>
 			<h1>
 				<a href="/" id="h1-link">
-					<img src="/static/logo.svg" />
+					<img src="/logo.svg" />
 					<span>WikiNearby</span>
 				</a>
 			</h1>
@@ -56,9 +59,9 @@
 			<div id="top"></div>
 			<div id="list"></div>
 			<div id="loading">
-				<img src="/static/loading.svg" />
+				<img src="/loading.svg" />
 			</div>
-			<script src="/static/index.js"></script>
+			<script src="/index.js"></script>
 		</main>
 	</body>
 </html>
