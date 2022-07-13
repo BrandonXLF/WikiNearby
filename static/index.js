@@ -19,7 +19,7 @@ function create(type, attrs, ...children) {
 	return el;
 }
 
-async function callAPI(lang, query, append = false, ignoreEmpty = false) {
+async function callAPI(lang, query, append = false, mainPage = false) {
 	window.removeEventListener('scroll', infiniteScroll);
 
 	apiAbort?.abort();
@@ -51,17 +51,15 @@ async function callAPI(lang, query, append = false, ignoreEmpty = false) {
 			history.pushState({}, '', `/${params.toString() ? '?' : ''}${params.toString()}`);
 		}
 
-		document.getElementById('top').replaceChildren((!query && !ignoreEmpty) ? 'Error: Missing article or coordinates' : '');
+		document.getElementById('top').replaceChildren((!query && !mainPage) ? 'Error: Missing article or coordinates' : '');
 		document.getElementById('list').replaceChildren();
 		
-		document.title = (query || !ignoreEmpty) ? `${query || 'Error'} - WikiNearby` : 'WikiNearby';
+		document.title = (query || !mainPage) ? `${query || 'Error'} - WikiNearby` : 'WikiNearby';
 	}
 	
-	if (!query) {
-		document.getElementById('about').style.display = '';
-		
-		return;
-	}
+	document.getElementById('about').style.display = (!query && mainPage) ? '' : 'none';
+	
+	if (!query) return;
 
 	document.getElementById('about').style.display = 'none';
 	document.getElementById('loading').style.display = 'block';
