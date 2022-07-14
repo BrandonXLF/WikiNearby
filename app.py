@@ -1,5 +1,5 @@
 import MySQLdb
-from flask import Flask, request, render_template
+from flask import Flask, request, send_from_directory
 from configparser import ConfigParser
 import json
 import re
@@ -13,7 +13,7 @@ def dec_to_str(dec):
 
 @app.route('/')
 def main():
-	return render_template('index.html', mainPage=len(request.args) == 0)
+	return send_from_directory(app.root_path, 'index.html')
 	
 @app.route('/api/languages')
 def api_languages():
