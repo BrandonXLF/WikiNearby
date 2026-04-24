@@ -143,8 +143,6 @@ def api_nearby():
 	out = []
 
 	for row in cursor.fetchall():
-		print(row)
-
 		out.append({
 			'lat': dec_to_str(row[0]),
 			'lon': dec_to_str(row[1]),
