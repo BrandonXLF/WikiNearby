@@ -125,7 +125,7 @@ def api_nearby():
 		'''
 			SET @sin_lat = SIN(%s * PI() / 180), @cos_lat = COS(%s * PI() / 180), @lon = %s * PI() / 180;
 			SELECT gt_lat, gt_lon, page_title, pp1.pp_value, pp2.pp_value, pp3.pp_value,
-			ACOS(@sin_lat * SIN(gt_lat * PI() / 180) + @cos_lat * COS(gt_lat * PI() / 180) * COS(gt_lon * PI() / 180 - @lon)) * 6371 as dist
+			ACOS(GREATEST(-1, LEAST(1, @sin_lat * SIN(gt_lat * PI() / 180) + @cos_lat * COS(gt_lat * PI() / 180) * COS(gt_lon * PI() / 180 - @lon)))) * 6371 as dist
 			FROM geo_tags
 			JOIN page ON gt_page_id = page_id AND page_namespace = 0
 			LEFT JOIN page_props pp1 ON page_id = pp1.pp_page AND pp1.pp_propname = 'wikibase-shortdesc'
@@ -143,6 +143,8 @@ def api_nearby():
 	out = []
 
 	for row in cursor.fetchall():
+		print(row)
+
 		out.append({
 			'lat': dec_to_str(row[0]),
 			'lon': dec_to_str(row[1]),
