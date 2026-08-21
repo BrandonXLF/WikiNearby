@@ -14,6 +14,12 @@ def dec_to_str(dec):
 dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
 
 def to_dir(lat, lon, lat2, lon2):
+	y = lon2 - lon
+	x = lat2 - lat
+
+	if x == 0 and y == 0:
+		return ''
+
 	rad = math.atan2(lon2 - lon, lat2 - lat)
 	frac = (1 + (rad / (2 * math.pi))) % 1
 	return dirs[round(frac * 8) % 8]
