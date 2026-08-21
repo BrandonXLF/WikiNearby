@@ -1,7 +1,6 @@
 import MySQLdb
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, jsonify
 from configparser import ConfigParser
-import json
 import re
 import math
 
@@ -45,7 +44,7 @@ def api_languages():
 	for row in cursor.fetchall():
 		out.append(re.match(r'https:\/\/([^.]+)\.wikipedia\.org', row[0])[1])
 
-	return json.dumps(out)
+	return jsonify(out)
 
 @app.route('/api/nearby')
 def api_nearby():
@@ -58,7 +57,7 @@ def api_nearby():
 	match = re.match(r'(-?[0-9.]*)[,;][ _]?(-?[0-9.]*)', query)
 	
 	if not query:
-		return json.dumps({
+		return jsonify({
 			'error': 'Missing coordinates or article name.'
 		}), 400
 	
@@ -88,7 +87,7 @@ def api_nearby():
 	res = cursor.fetchone()
 	
 	if not res:
-		return json.dumps({
+		return jsonify({
 			'error': f'Could not find Wikipedia with language code {lang}.'
 		}), 400
 		
@@ -121,7 +120,7 @@ def api_nearby():
 		pair = cursor.fetchone()
 
 		if not pair:
-			return json.dumps({
+			return jsonify({
 				'error': 'Page does not have coordinates.'
 			}), 400
 		
@@ -164,7 +163,7 @@ def api_nearby():
 			'dir': to_dir(latnum, lonnum, float(row[0]), float(row[1]))
 		})
 	
-	return json.dumps({
+	return jsonify({
 		'lat': lat,
 		'lon': lon,
 		'list': out
