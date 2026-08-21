@@ -74,16 +74,17 @@ async function callAPI(lang, query, append = false, mainPage = false) {
 			signal: apiAbort.signal
 		});
 
-	document.getElementById('loading').style.display = '';
-
 	if (res.status === 500) {
+		document.getElementById('loading').style.display = '';
 		document.title = 'Error - WikiNearby';
 		document.getElementById('top').replaceChildren('Error: An internal error has occurred!');
+		return;
 	}
 
 	let data = await res.json();
 	
 	if (data.error) {
+		document.getElementById('loading').style.display = '';
 		document.title = 'Error - WikiNearby';
 		document.getElementById('top').replaceChildren(`Error: ${data.error}`);
 		return;
@@ -120,6 +121,7 @@ async function callAPI(lang, query, append = false, mainPage = false) {
 		))
 	);
 
+	document.getElementById('loading').style.display = '';
 	currentLanguage = lang;
 	currentQuery = query;
 
