@@ -4,7 +4,7 @@
 
 ## Installing
 
-The required Python dependences are located in `requirements.txt`. They can be Installed with the command `pip install -r requirements.txt`.
+The required Python dependencies are located in `requirements.txt`. They can be Installed with the command `pip install -r requirements.txt`.
 
 ### Config
 
