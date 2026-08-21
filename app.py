@@ -3,6 +3,7 @@ from flask import Flask, request, send_from_directory
 from configparser import ConfigParser
 import json
 import re
+import math
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 config = ConfigParser('')
@@ -10,6 +11,13 @@ config.read('config.ini')
 
 def dec_to_str(dec):
 	return str(dec.to_integral() if dec == dec.to_integral() else dec.normalize())
+
+dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+
+def to_dir(lat, lon, lat2, lon2):
+	rad = math.atan2(lon2 - lon, lat2 - lat)
+	frac = (1 + (rad / (2 * math.pi))) % 1
+	return dirs[round(frac * 8) % 8]
 
 @app.route('/')
 def main():
@@ -142,6 +150,9 @@ def api_nearby():
 
 	out = []
 
+	latnum = float(lat)
+	lonnum = float(lon)
+
 	for row in cursor.fetchall():
 		out.append({
 			'lat': dec_to_str(row[0]),
@@ -149,7 +160,8 @@ def api_nearby():
 			'page': row[2].decode(),
 			'desc': row[3].decode() if row[3] else None,
 			'img': row[4].decode() if row[4] else (row[5].decode() if row[5] else None),
-			'dist': f'{row[6]:0.2f}'
+			'dist': f'{row[6]:0.2f}',
+			'dir': to_dir(latnum, lonnum, float(row[0]), float(row[1]))
 		})
 	
 	return json.dumps({

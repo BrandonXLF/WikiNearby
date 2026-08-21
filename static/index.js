@@ -114,7 +114,7 @@ async function callAPI(lang, query, append = false, mainPage = false) {
 				create('div', entry.desc),
 				create('div',
 					getGeoHackLink(entry.lat, entry.lon, lang, entry.page),
-					create('span', ` (${entry.dist} km)`)
+					create('span', ` | ${entry.dist} km ${entry.dir}`)
 				)
 			)
 		))
